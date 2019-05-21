@@ -1,0 +1,60 @@
+     <!DOCTYPE html>
+     <html>
+         <head>
+		 <meta charset="utf-8">
+		 <link rel="stylesheet" type="text/css" href="style.css">
+             <title>
+                 Write a title for your page here..
+             </title>
+         </head>
+         <body>
+		 <figure>
+	<video controls id="downtown-los-angeles">
+		<source src="downtown-los-angeles.mp4">
+		<source src="downtown-los-angeles.webm">
+		<track kind="chapters" label="Locations" src="test.vtt" srclang="en" default onload="displayChapters(this)">                
+	</video>
+	<figcaption>
+		<ol id="chapters">
+		</ol>
+	</figcaption>
+</figure>
+<script>
+function displayChapters(trackElement){
+	var locationList = document.getElementById("chapters")
+	if ((trackElement) && (textTrack = trackElement.track)){
+		if (textTrack.kind === "chapters"){
+			textTrack.mode = 'hidden';
+			for (var i = 0; i < textTrack.cues.length; ++i) {
+				cue = textTrack.cues[i],
+				chapterName = cue.text,
+				start = cue.startTime,
+				newLocale = document.createElement("li");
+				newLocale.setAttribute('id', start);
+				var localeDescription = document.createTextNode(cue.text);
+				newLocale.appendChild(localeDescription);
+				locationList.insertBefore(newLocale, locationList[0]);
+				newLocale.addEventListener("click",
+				function() {
+					video.currentTime = this.id;
+				},false);
+			}
+		textTrack.addEventListener("cuechange",
+			function() {
+				var currentLocation = this.activeCues[0].startTime;
+				if (chapter = document.getElementById(currentLocation)) {
+					var locations = [].slice.call(document.querySelectorAll("#chapters li"));
+					for (var i = 0; i < locations.length; ++i) { 
+						locations[i].classList.remove("current");
+					}
+					chapter.classList.add("current");
+					locationList.style.top = "-"+chapter.parentNode.offsetTop+"px";
+				}
+			},false);
+		}
+		console.log(textTrack);
+	}
+}
+</script>
+</body>
+</html>
